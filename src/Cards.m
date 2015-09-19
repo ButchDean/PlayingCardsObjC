@@ -4,23 +4,18 @@
 
 - (void) _addCardToDeck: (NSInteger) cardEnum withString: (NSString *) cardString andValue: (NSInteger) cardValue
 {
-    currentCard = (CardDetail){cardEnum, cardString, cardValue};
-    card = [NSValue valueWithBytes:&currentCard objCType:@encode(CardDetail)];
-    [deck addObject:card];
+    currentCard = (CardDetail){cardEnum, (NSMutableString *)cardString, cardValue};
+    card = [NSValue valueWithBytes: &currentCard objCType: @encode(CardDetail)];
+    [deck addObject: card];
 }
 
-- (void) _printCard: (NSInteger) idx
+- (id) initCardDeck
 {
-    card = [deck objectAtIndex: idx];
-    [card getValue: &currentCard];
-    NSLog(@"%@ with value %i", currentCard.cardStr, currentCard.cardVal);
-}
-
-- (void) initCardDeck
-{
-    NSLog(@"initCardDeck called.");
-
+    // Set up actual deck with card detail.
     deck = [[NSMutableArray alloc] init];
+
+    // Set up deck indexes into deck to allow randomization and dealing.
+    deckIdx = [[NSMutableArray alloc] init];
 
     [self _addCardToDeck: SPADES_A withString: @"Ace of Spades" andValue: 21];
     [self _addCardToDeck: SPADES2 withString: @"2 of Spades" andValue: 2];
@@ -79,17 +74,69 @@
     [self _addCardToDeck: DIAMONDS_K withString: @"King of Diamonds" andValue: 13];
 
     // Output all cards in array.
-    int i;
-    for(i = 0; i < [deck count]; i++)
-        [self _printCard: i];
+    for(NSUInteger i = 0; i < [deck count]; i++)
+    {
+        // Build card deck indexes to be randomized.
+        NSNumber* idx = [NSNumber numberWithInt: i];
+        [deckIdx addObject: idx];
+    }
 
+    return self;
 }
 
-- (void) dealloc
+- (void) printCard: (NSInteger) idx
 {
-    NSLog(@"dealloc called.");
+    if(idx >= 0)
+    {
+        card = [deck objectAtIndex: idx];
+        [card getValue: &currentCard];
+        NSLog(@"Dealt %@ with value %i", currentCard.cardStr, currentCard.cardVal);
+    }
+}
 
+- (void) shuffle;
+{
+    NSUInteger idxCnt = [deckIdx count];
+
+    if(idxCnt > 1)
+    {
+        for(NSUInteger i = idxCnt - 1; i > 0; i--)
+        {
+            [deckIdx exchangeObjectAtIndex: i withObjectAtIndex: arc4random_uniform((int32_t)(i + 1))];
+        }
+    }
+}
+
+- (NSInteger) deal
+{
+    NSUInteger idx = [deckIdx count];
+    NSUInteger idxToCardDetail = 0;
+
+    if(idx > 0)
+    {
+        // Fetch the last idx.
+        idxToCardDetail = [[deckIdx objectAtIndex: (idx - 1)] integerValue];
+
+        // Remove this last index from index array.
+        [deckIdx removeLastObject];
+
+        return idxToCardDetail;
+    }
+
+    NSLog(@"Card deck is empty!");
+
+    return -1;
+}
+
+- (NSInteger) deckCount
+{
+    return [deckIdx count];
+}
+
+- (void) deallocCards
+{
     [deck release];
+    [deckIdx release];
 
     [super dealloc];
 }

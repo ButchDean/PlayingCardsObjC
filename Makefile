@@ -5,7 +5,7 @@ OUT = cards
 .PHONY: clean
 
 all:
-	gcc `gnustep-config --objc-flags` -lgnustep-base -lobjc $(INC) $(SRC) -o $(OUT)
+	gcc `gnustep-config --objc-flags` -lgnustep-base -lobjc -lbsd -std=c11 $(INC) $(SRC) -o $(OUT)
 
 clean:
 	rm $(OUT) *.d

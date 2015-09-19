@@ -18,9 +18,14 @@ typedef struct _CardDetail
     NSMutableArray* deck;
     NSValue* card;
     CardDetail currentCard;
+    NSMutableArray* deckIdx;
 }
 
-- (void) initCardDeck;
-- (void) dealloc;
+- (id) initCardDeck;
+- (void) printCard: (NSInteger) idx;
+- (void) shuffle;
+- (NSInteger) deal;
+- (NSInteger) deckCount;
+- (void) deallocCards;
 
 @end
