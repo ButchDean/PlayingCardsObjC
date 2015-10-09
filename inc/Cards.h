@@ -21,11 +21,11 @@ typedef struct _CardDetail
     NSMutableArray* deckIdx;
 }
 
-- (id) initCardDeck;
+- (id) init;
 - (void) printCard: (NSInteger) idx;
 - (void) shuffle;
 - (NSInteger) deal;
 - (NSInteger) deckCount;
-- (void) deallocCards;
+- (void) dealloc;
 
 @end

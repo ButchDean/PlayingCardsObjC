@@ -6,7 +6,7 @@ int main (int argc, const char * argv[])
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     NSUInteger remainingCards;
 
-    Cards* cards = [[Cards alloc] initCardDeck];
+    Cards* cards = [[Cards alloc] init];
 
     [cards shuffle];
 
@@ -24,7 +24,7 @@ int main (int argc, const char * argv[])
     NSLog(@"Try to deal from empty deck...");
     [cards printCard: [cards deal]];
 
-    [cards deallocCards];
+    [cards dealloc];
 
     [pool drain];
 

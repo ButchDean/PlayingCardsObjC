@@ -9,8 +9,10 @@
     [deck addObject: card];
 }
 
-- (id) initCardDeck
+- (id) init
 {
+    NSLog(@"Cards init called");
+
     // Set up actual deck with card detail.
     deck = [[NSMutableArray alloc] init];
 
@@ -133,8 +135,10 @@
     return [deckIdx count];
 }
 
-- (void) deallocCards
+- (void) dealloc
 {
+    NSLog(@"Cards dealloc called");
+
     [deck release];
     [deckIdx release];
 
